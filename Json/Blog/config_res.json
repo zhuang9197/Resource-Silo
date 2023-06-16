@@ -1,0 +1,11 @@
+{
+  "url":{
+    "url_Database":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Database.json",
+    "
+  },
+  "img":{
+    "img_Yellor":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Image/Blog/GentlemanDog.png",
+    "img_Black":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Image/Blog/GentlemanDog1.png",
+    "img_Background":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Image/Blog/Background.png"
+  }
+}
