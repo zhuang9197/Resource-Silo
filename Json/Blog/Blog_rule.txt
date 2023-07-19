@@ -1,0 +1,35 @@
+# 代表无class
+$ 代表有class
+% 代表特殊
+
+ #d  = <div> 
+ #1  = <h1>
+ #2  = <h2>
+ #p  = <p>
+ #a  = <a>
+ #pr  = <pre> 
+ #c  = <code>
+ /#d  = </div> 
+ /#1  = </h1>
+ /#2  = </h2>
+ /#p  = </p>
+ /#a  = </a>
+ /#pr  = </pre> 
+ /#c  = </code>
+
+ $#1  = <h1 class = "Directory">
+ $#d-o  = div class = "Output"
+ $#c-cs  = code class = "language-csharp box-shadow"
+ $#c-sql  = code class = "language-sql box-shadow"
+
+ %d = <div id="cnblogs_post_body" class="blogpost-body cnblogs-markdown">
+
+ !--  = <!--
+
+ --!  = --!>
+
+
+var html = txt.replace /\ #d\ /g, "<div>" .replace /\ #1\ /g, "<h1>" .replace /\ #2\ /g, "<h2>" .replace /\ #p\ /g, "<p>" .replace /\ #a\ /g, "<a>" .replace /\ #pr\ /g, "<pre>" .replace /\ #c\ /g, "<code>" 
+                    .replace /\ \/#d\ /g, "</div>" .replace /\ \/#1\ /g, "</h1>" .replace /\ \/#2\ /g, "</h2>" .replace /\ \/#p\ /g, "</p>" .replace /\ \/#a\ /g, "</a>" .replace /\ \/#pr\ /g, "</pre>" .replace /\ \/#c\ /g, "</code>" 
+                    .replace /\ \$#1\ /g, "<h1 class=\"Directory\">" .replace /\ \$#d-o\ /g, "<div class=\"Output\">" .replace /\ \$#c-cs\ /g, "<code class=\"language-csharp box-shadow\">" .replace /\ \$#c-sql\ /g, "<code class=\"language-sql box-shadow\">" 
+                    .replace /\ !--\ /g, "<!--" .replace / --! \ /g, "--!>" ;
