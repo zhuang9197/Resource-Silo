@@ -6,6 +6,9 @@
       "Des":"sqlserver最基础语法",
       "Blog_Title":"sqlserver基础",
       "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Database/sqlserver_Base.txt",
+      "Nav":[
+        "section1","section2","section3"
+      ],
       "CreateTime":"2023-01-03",
       "UpdateTime":""
     },
