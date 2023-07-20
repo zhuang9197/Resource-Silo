@@ -1,32 +1,32 @@
-#
+#d
     这里是摘要1
     内容就是摘要一的内容
-/#
+@d
 #1
     目录1
-/#1
+@1
 #1
     目录2
-/#1
+@1
 #1
     目录3
-/#1
+@1
 
 #2
     目录1
-/#1
+@2
 #a-1
-/#a
+@a
 #p
     这是目录1的摘要-123
-/#p
+@p
 %d
     #pr
         $c-cs
         private int num_1{get;set;}
         private int num_2{get;set;}
         public Aside(int num_1)
-        /#c
-    /#pr
-/#d
+        @c
+    @pr
+@d
 
