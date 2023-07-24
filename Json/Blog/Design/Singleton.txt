@@ -1,0 +1,153 @@
+#d
+单例模式
+@d
+
+#2
+什么是单例模式
+@2
+#a-1
+@a
+#p
+单例模式可以简单理解为整个项目中仅有一个对象实例，这就意味着要么设计构造函数使得在多次实例化类时返回同一个对象，要么将构造函数设为(private),只能通过单例类提供的静态方法得到唯一对象。
+通常会采用第二种方式，因为第一种不符合正常逻辑。
+@p
+
+#2
+根据自己的理解创建第一个单例模式
+@2
+#a-2
+@a
+#p
+根据单例模式的描述，我们根据自己的理解尝试创建一个单例模式。
+首先，将构造函数设为private
+%d
+#r
+$c-cs
+class Singleton{
+    private Singleton() {}
+}
+@c
+@r
+@d
+现在，当我们尝试在Main中实例类时，例如
+
+Singleton singleton = new Singleton();
+
+编译器将给出这个错误:CS0122	“Singleton.Singleton()”不可访问，因为它具有一定的保护级别。
+报错了，但这是个正确的错误。
+我们无法显示实例化Singleton这个类，那么就需要一个静态方法，来生成或者是提供需要的对象。
+单例模式需要一个静态且唯一的对象，：
+%d
+#r
+$c-cs
+public class Singleton
+{
+    private Singleton() => Console.WriteLine("调用了一次构造函数");
+    private static Singleton _singleton = new Singleton();
+
+    public static Singleton Instance() => _singleton;
+
+    public static void Foo()
+    {
+        Console.WriteLine("调用了一次我，但是什么都没有发生。");
+        if (_singleton != null)
+        {
+            Console.WriteLine("有一个_singleton");
+        }
+    }
+}
+
+@c
+@r
+@d
+同理，也可以采用静态构造函数来实现。
+%d
+#r
+$c-cs
+class Singleton
+{
+    private Singleton() => Console.WriteLine("调用了一次构造函数");
+    private static Signleton _singleton;
+
+    static Singleton() { _singleton = new Signleton(); }
+
+    public static void Foo()
+    {
+        Console.WriteLine("调用了一次我，但是什么都没有发生。");
+        if (_singleton != null)
+        {
+            Console.WriteLine("有一个_singleton");
+        }
+    }
+}
+@c
+@r
+@d
+
+到这一步，单例类就实现了，不用惊讶，单例模式就是这么简单。
+观察上面的代码，不难发现只要我们使用到类Singleton时，就会产生一个_singleton，无论我们是否需要这个对象。
+例如我们调用Main中调用 Foo这个方法,会发现就算我们并不需要这个Signleton,编译器还是为我们实例化了这一个对象。
+这种设计模式被称为饿汉式的单例模式，有饿汉式，但是并没有饱汉式，与其对应的称之为懒汉式单例模式。
+
+#2
+懒汉单例模式
+@2
+#p
+懒汉单例模式，是指在单例模式的基础上，将对象的实例化设计成仅当程序需要时才生成这个对象。
+首先，我们同样需要私有化构造函数，以及不进行初始化的静态对象，并提供一个静态方法来在需要时进行唯一一次实例化和返回对象。
+%d
+#r
+$c-cs
+class Singleton
+{
+    private Singleton() => Console.WriteLine("调用了一次构造函数");
+    private static Signleton _singleton;
+
+    public static Singleton Instance(){
+        if(_singleton == null)
+        {
+            _singleton = new Singleton();
+        }
+
+        return _singleton;
+    } 
+
+    public static void Foo()
+    {
+        Console.WriteLine("调用了一次我，但是什么都没有发生。");
+        if (_singleton != null)
+        {
+            Console.WriteLine("有一个_singleton");
+        }
+    }
+}
+@c
+@r
+@d
+这段代码看似没什么问题，但是当程序高并发的初始化该对象时，便会出现一个极为致命的错误。
+倘若程序以这种形式初始化对象时：
+%d
+#r
+$c-cs
+for(int i=0;i<100;i++)
+{
+     Task.Run(() =>
+    {
+        Singleton singleton = Singleton.Instance();
+    });
+}
+@c
+@r
+@d
+运行完代码发现控制台不止打印了一遍“调用了构造函数”，具体次数与电脑性能有关。
+原因可以简单理解为：多线程是对cpu进行切片执行，每个线程被分到的执行时间有限，如果在这段时间内线程未执行完，这段线程将被TCB保留，等到切换至该线程再继续执行。
+这就意味着，当某个线程执行完if判断，但是尚未执行初始化，而接下来的线程进行if判断时_singleton仍是null状态，就会导致创建了多个对象。
+这种情况是十分致命的，如果连一致性都无法保证，这种单例模式就没有存在的意义。
+@p
+    
+@p
+
+
+
+
+

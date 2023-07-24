@@ -1,0 +1,19 @@
+{
+    "List":[
+        {
+            "Id":1,
+            "Title":"单例模式",
+            "Des":"单例模式，一种十分简单的设计模式",
+            "Blog_Title":"单例模式",
+            "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Database/Singleton.txt",
+            "Nav":[
+              {"Id":"section1","Title":"什么是单例模式"}
+              ,{"Id":"section2","Title":"创建第一个单例模式"}
+              ,{"Id":"section3","Title":"懒汉单例模式"}
+              ,{"Id":"section4","Title":"总结"}
+            ],
+            "CreateTime":"2023-01-03",
+            "UpdateTime":""
+          }
+    ]
+}

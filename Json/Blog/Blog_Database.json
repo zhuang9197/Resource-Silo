@@ -7,17 +7,28 @@
       "Blog_Title":"sqlserver基础",
       "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Database/sqlserver_Base.txt",
       "Nav":[
-        "section1","section2","section3"
+        {"Id":"section1","Title":"DDL"}
+        ,{"Id":"section2","Title":"DML"}
+        ,{"Id":"section3","Title":"DCL"}
+        ,{"Id":"section4","Title":"扩展"}
       ],
       "CreateTime":"2023-01-03",
       "UpdateTime":""
     },
     {
       "Id":2,
-      "Title":"Title2",
-      "Des":"Des2",
-      "Blog_Title":"BlogTitle2",
-      "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Database/demo.txt",
+      "Title":"数据库中的系统",
+      "Des":"使用sqlserver常用的系统表和存储过程，能为开发提高效率",
+      "Blog_Title":"数据库中的系统",
+      "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Database/sqlserver_system.txt",
+      "Nav":[
+        
+         {"Id":"section1","Title":"DDL"}
+        ,{"Id":"section2","Title":"DML"}
+        ,{"Id":"section3","Title":"DCL"}
+        ,{"Id":"section4","Title":"扩展"}
+        
+      ],
       "CreateTime":"CreateTime2"
     },
     {

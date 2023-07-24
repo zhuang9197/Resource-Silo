@@ -1,0 +1,112 @@
+#d
+    工厂模式
+@d
+
+#2
+    什么是工厂模式
+@2
+#a-1
+@a
+#p
+    单例模式可以简单理解为整个项目中仅有一个对象实例，这就意味着要么设计构造函数使得在多次实例化类时返回同一个对象，要么将构造函数设为(private),只能通过单例类提供的静态方法得到唯一对象。
+    通常会采用第二种方式，因为第一种不符合正常逻辑。
+@p
+
+#2
+    根据自己的理解创建第一个单例模式
+@2
+#a-2
+#p
+    根据单例模式的描述，我们根据自己的理解尝试创建一个单例模式。
+    首先，将构造函数设为private
+
+    class Singleton{
+        private Signleton() => {};
+    }
+    
+    现在，当我们尝试想要实例类时，例如
+    
+    Signleton signleton = new Signleton();
+
+    编译器将给出这个错误:CS0122	“Singleton.Singleton()”不可访问，因为它具有一定的保护级别。
+    报错了，但这是个正确的错误。
+    我们无法显示实例化Signleton这个类，那么就需要一个静态方法，来生成需要的对象，如：
+
+    class Signleton{
+        private Signleton() => {};
+
+        public static Signleton Instance() => new Signleton();
+    }
+
+    到这里，我们实现了，但是很明显这还不是一个单例模式，因为每次调用Instance()时，我们得到的都是一个全新的对象。
+    如果说到这里我们的逻辑都是对的，
+
+    class Signleton{
+
+        private Signleton() => {}
+
+        private static Signleton _signleton;
+
+        private int _Num;
+        private static int _staticNum;
+
+        public static signleton Instance(){
+            if(_signleton == null)
+            {
+                _signleton = new Signleton();
+            }
+
+            return _signleton;
+        }
+
+        public int getNum()
+        {
+            return _Num++;
+        }
+
+        public static int getStaticNum()
+        {
+            return _staticNum++;
+        }
+    }
+
+    Signleton signleton = Signleton.Instance();
+    Signleton signleton_1 = Signleton.Instance();
+
+    Consolg.Writeline(signleton.getNum());
+    Consolg.Writeline(signleton_1.getNum());
+
+    
+@p
+
+#2
+    当前单例模式存在的问题
+@2
+#a-3
+@a
+#p
+    做到这一步，我们实现了单例模式的基本逻辑，但是在开发中，往往无法避免高并发的情况。
+    
+@p
+#d
+    
+%d
+#r
+$c-sql
+Create Database
+@c
+@r
+@d
+
+@d      
+
+%d
+    #r
+        $c-cs
+        private int num_1{get;set;}
+        private int num_2{get;set;}
+        public Aside(int num_1)
+        @c
+    @r
+@d
+
