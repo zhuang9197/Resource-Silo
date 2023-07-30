@@ -6,7 +6,7 @@
             "Title":"单例模式",
             "Des":"单例模式，一种十分简单的设计模式",
             "Blog_Title":"单例模式",
-            "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Database/Singleton.txt",
+            "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Design/Singleton.txt",
             "Nav":[
               {"Id":"section1","Title":"什么是单例模式"}
               ,{"Id":"section2","Title":"创建第一个单例模式"}
@@ -14,6 +14,21 @@
               ,{"Id":"section4","Title":"总结"}
             ],
             "CreateTime":"2023-01-03",
+            "UpdateTime":""
+          },
+          {
+            "Id":2,
+            "Title":"工厂模式",
+            "Des":"简单了解下工厂模式",
+            "Blog_Title":"工厂",
+            "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Design/Factory.txt",
+            "Nav":[
+              {"Id":"section1","Title":"什么是工厂模式"}
+              ,{"Id":"section2","Title":"简单工厂"}
+              ,{"Id":"section3","Title":"工厂模式"}
+              ,{"Id":"section4","Title":"抽象工厂模式"}
+            ],
+            "CreateTime":"2023-02-03",
             "UpdateTime":""
           }
     ]

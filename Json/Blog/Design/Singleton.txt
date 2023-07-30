@@ -2,6 +2,7 @@
 单例模式
 @d
 
+
 #2
 什么是单例模式
 @2
@@ -11,6 +12,7 @@
 单例模式可以简单理解为整个项目中仅有一个对象实例，这就意味着要么设计构造函数使得在多次实例化类时返回同一个对象，要么将构造函数设为(private),只能通过单例类提供的静态方法得到唯一对象。
 通常会采用第二种方式，因为第一种不符合正常逻辑。
 @p
+
 
 #2
 根据自己的理解创建第一个单例模式
@@ -30,9 +32,7 @@ class Singleton{
 @r
 @d
 现在，当我们尝试在Main中实例类时，例如
-
 Singleton singleton = new Singleton();
-
 编译器将给出这个错误:CS0122	“Singleton.Singleton()”不可访问，因为它具有一定的保护级别。
 报错了，但这是个正确的错误。
 我们无法显示实例化Singleton这个类，那么就需要一个静态方法，来生成或者是提供需要的对象。
@@ -67,9 +67,9 @@ $c-cs
 class Singleton
 {
     private Singleton() => Console.WriteLine("调用了一次构造函数");
-    private static Signleton _singleton;
+    private static Singleton _singleton;
 
-    static Singleton() { _singleton = new Signleton(); }
+    static Singleton() { _singleton = new Singleton(); }
 
     public static void Foo()
     {
@@ -86,7 +86,7 @@ class Singleton
 
 到这一步，单例类就实现了，不用惊讶，单例模式就是这么简单。
 观察上面的代码，不难发现只要我们使用到类Singleton时，就会产生一个_singleton，无论我们是否需要这个对象。
-例如我们调用Main中调用 Foo这个方法,会发现就算我们并不需要这个Signleton,编译器还是为我们实例化了这一个对象。
+例如我们调用Main中调用 Foo这个方法,会发现就算我们并不需要这个Singleton,编译器还是为我们实例化了这一个对象。
 这种设计模式被称为饿汉式的单例模式，有饿汉式，但是并没有饱汉式，与其对应的称之为懒汉式单例模式。
 
 #2
@@ -101,7 +101,7 @@ $c-cs
 class Singleton
 {
     private Singleton() => Console.WriteLine("调用了一次构造函数");
-    private static Signleton _singleton;
+    private static Singleton _singleton;
 
     public static Singleton Instance(){
         if(_singleton == null)
@@ -143,8 +143,79 @@ for(int i=0;i<100;i++)
 原因可以简单理解为：多线程是对cpu进行切片执行，每个线程被分到的执行时间有限，如果在这段时间内线程未执行完，这段线程将被TCB保留，等到切换至该线程再继续执行。
 这就意味着，当某个线程执行完if判断，但是尚未执行初始化，而接下来的线程进行if判断时_singleton仍是null状态，就会导致创建了多个对象。
 这种情况是十分致命的，如果连一致性都无法保证，这种单例模式就没有存在的意义。
+关于这个问题，本文提出三个不同的解决方案。 
+
+第一，双if加锁
+%d
+#r
+$c-cs
+class Singleton
+{
+    private Singleton() => Console.WriteLine("调用了一次构造函数");
+    private static Singleton _singleton;
+    private static object _lock = new object();
+
+    public static Singleton Instance(){
+        if(_singleton == null)
+        {
+            lock(_lock){
+                if(_singleton == null)
+                {
+                    _singleton = new Singleton();
+                }
+            }
+            
+        }
+       
+
+        return _singleton;
+    } 
+
+    public static void Foo()
+    {
+        Console.WriteLine("调用了一次我，但是什么都没有发生。");
+        if (_singleton != null)
+        {
+            Console.WriteLine("有一个_singleton");
+        }
+    }
+}
+@c
+@r
+@d
+第二种，借助饿汉模式的思想
+
+%d
+#r
+$c-cs
+class Singleton
+{
+    private Singleton() => Console.WriteLine("调用了一次构造函数");
+    private class handle(){
+        public static Singleton _singleton = new _singleton(); 
+    }
+
+    public static Singleton Instance(){
+        
+       
+
+        return handle._singleton;
+    } 
+
+    public static void Foo()
+    {
+        Console.WriteLine("调用了一次我，但是什么都没有发生。");
+        if (_singleton != null)
+        {
+            Console.WriteLine("有一个_singleton");
+        }
+    }
+}
+@c
+@r
+@d
+虽然就嵌套类handle本身来说是属于饿汉式，但是我们直接使用的Singleton却是懒汉式，属于是间接实现了懒汉式单例模式。
 @p
-    
 @p
 
 

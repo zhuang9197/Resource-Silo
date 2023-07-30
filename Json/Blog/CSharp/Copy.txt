@@ -1,0 +1,478 @@
+#d
+    浅拷贝和深拷贝
+@d
+
+#2
+C#中的值类型和引用类型
+@2
+#a-1
+@a
+#p
+在讲解拷贝时，需要先搞清楚C#中的值类型和引用类型。
+值类型：
+    值类型的变量直接存储数据的值。
+    值类型的变量在栈上分配内存。
+    值类型的变量之间的赋值操作会进行值的拷贝。
+引用类型：
+    引用类型的变量存储的是对象的引用（内存地址）。
+    引用类型的变量在栈上分配内存，而对象本身在堆上分配内存。
+    引用类型的变量之间的赋值操作会复制引用，而不是对象本身。
+    对于值类型来说，当对值类型进行拷贝时，会将原始值完整地复制到新的变量或对象中。这意味着原始值和拷贝后的值是完全独立的，互不影响。任何对拷贝后的值的修改都不会影响原始值。
+    对于引用类型来说，当对引用类型进行拷贝时，实际上只会复制引用，而不是对象本身。这意味着原始引用和拷贝后的引用都指向相同的对象实例。因此，对拷贝后的引用所指向的对象进行修改，会影响原始引用指向的对象。
+所以所谓的深拷贝浅拷贝都是建立在引用类型的前提下探讨的。
+@p
+
+#2
+浅拷贝
+@2
+#a-2
+@a
+#p
+在讲浅拷贝之前，我们先来做个最简单的实验。
+%d
+#r
+$c-cs
+public class Idinfo
+{
+    private int Id;
+    public Idinfo(int i) {
+        this.Id = i;
+    }
+
+    public void setId(int i)
+    {
+        this.Id = i;
+    }
+
+    public int getId()
+    {
+        return this.Id;
+    }
+}
+
+public class Copy : ICloneable
+{
+    private int _num;
+    private DateTime _date;
+    private Idinfo _idinfo;
+    //private List<int> arr;  // 使用 List<int> 替换 int[]，方便添加元素
+
+    public Copy(int i)
+    {
+        _date = DateTime.Now;
+        _num = i;
+        _idinfo = new Idinfo(i);
+    }
+
+    public void setNum(int i)
+    {
+        _num = i;
+    }
+
+    public void setDate(DateTime dt)
+    {
+        _date = dt;
+    }
+
+    public void setId(int i)
+    {
+        _idinfo.setId(i);
+    }
+
+    public DateTime getDate()
+    {
+        return _date;
+    }
+
+    public int getNum()
+    {
+        return _num;
+    }
+
+    public int getId()
+    {
+        return _idinfo.getId();
+    }
+
+    public object Clone()
+    {
+        return (Copy)this.MemberwiseClone();
+    }
+}
+@c
+@r
+@d
+ICloneable 接口是一个用于支持对象克隆的接口。它定义了一个名为 Clone 的方法，该方法用于创建当前对象的浅表副本
+接下来在Main函数中测试下结果
+%d
+#r
+$c-cs
+static void Main(string[] args)
+{
+    Copy copy = new Copy(1);
+    
+    Console.WriteLine("copy.Num: "+ copy.getNum());
+    Console.WriteLine(copy.getDate());
+    Console.WriteLine(copy.getId());
+    Copy copy1 = copy;
+    Console.WriteLine("copy1.Num: " + copy1.getNum());
+    Console.WriteLine(copy1.getDate());
+    Console.WriteLine(copy1.getId());
+    Copy copy2 = (Copy)copy.Clone();
+    Console.WriteLine("copy2.Num: " + copy2.getNum());
+    Console.WriteLine(copy2.getDate());
+    Console.WriteLine(copy2.getId());
+
+    copy1.setNum(4);
+    copy1.setId(2);
+
+    Console.WriteLine("copy.Num: " +copy.getNum());
+    Console.WriteLine(copy.getDate());
+    Console.WriteLine(copy.getId());
+    Console.WriteLine("copy1.Num: " + copy1.getNum());
+    Console.WriteLine(copy1.getDate());
+    Console.WriteLine(copy1.getId());
+    Console.WriteLine("copy2.Num: " + copy2.getNum());
+    Console.WriteLine(copy2.getDate());
+    Console.WriteLine(copy2.getId());
+}
+@c
+@r
+@d
+$d-o
+copy.Num: 1
+2023/2/29 23:18:28
+1
+copy1.Num: 1
+2023/2/29 23:18:28
+1
+copy2.Num: 1
+2023/2/29 23:18:28
+1
+copy.Num: 4
+2023/2/29 23:18:28
+2
+copy1.Num: 4
+2023/2/29 23:18:28
+2
+copy2.Num: 1
+2023/2/29 23:18:28
+2
+@d
+不难看出，如果只是进行赋值操作，不管是值类型还是引用类型，都似乎操作的是同一对象，而用ICloneable接口自带的浅拷贝方法MemberwiseClone似乎对值类型进行了拷贝，但是引用类型还是指向同一个对象。
+带着这份疑惑，我们来思考下深拷贝怎么实现。
+@p
+
+#2
+深拷贝
+@2
+#a-3
+@a
+#p
+要实现引用的拷贝，也就是深拷贝，这里提出两种方式。
+首先，用自己最直观的思维方式去做，既然类内部的引用拷贝的仍是同一个对象，那咱new一个对象不就好了，Clone里的代码变更如下。
+%d
+#r
+$c-cs
+public object Clone()
+{
+    Copy copy_T = new Copy(this.getId());
+    copy_T.setDate(this.getDate());
+    copy_T.setNum(this.getNum());
+    copy_T.setId(this.getId());
+    return copy_T;
+    //因为我们Copy类中的属性都是private，所以对于引用类型没法通过new实现，如果类中Idinfo是公开的，可以采用这种方法,输出的结果一样
+    //Copy copy_T = this.MemberwiseClone();
+    //copy_T._idinfo = new Idinfo(this.getId());
+    //return copy_T;
+}
+@c
+@r
+@d
+让我们再运行上面的代码，会得到如下结果
+$d-o
+copy.Num: 1
+2023/2/29 23:18:28
+1
+copy1.Num: 1
+2023/2/29 23:18:28
+1
+copy2.Num: 1
+2023/2/29 23:18:28
+1
+copy.Num: 4
+2023/2/29 23:18:28
+2
+copy1.Num: 4
+2023/2/29 23:18:28
+2
+copy2.Num: 1
+2023/2/29 23:18:28
+1
+@d
+ps（仔细看注视的代码，不知道你能发看出一个问题，如果说调用MemberwiseClone得到的是值拷贝，但是引用的指向同一个对象，那为什么 copy_T._idinfo = new Idinfo(this.getId()) 这段代码不会影响到原来copy的_idinfo?
+在.NET中，对象之间的赋值是通过引用进行的。当你将一个对象赋值给另一个变量时，实际上是将对象的引用复制给了新的变量，而不是复制整个对象的内容。因此，原始对象和新变量仍然指向同一个实例。
+在你的情况下，copy._idinfo和copy_T._idinfo最初同时指向同一个实例。当你执行copy_T._idinfo = new Idinfo()时，它会创建一个新的copy实例，并将新实例的引用赋值给copy_T._idinfo。这样，copy_T._idinfo指向了一个新的实例，但是copy._idinfo仍然指向原始的实例，没有受到影响。）
+到这一步，Copy类的深拷贝是简单实现了，但是如果Idinfo里面还有个Message的引用，那该怎么办？如果Message里还有个Log的引用呢？
+思考一下。
+%d
+#r
+$c-cs
+public object Clone()
+{
+    Copy copy = (Copy)this.MemberwiseClone();
+
+    copy._idinfo = new Idinfo(this.getId());
+    copy._idinfo.message = new Message(this._idinfo.message.mes);
+    copy._idinfo.message.log = new Log(this._idinfo.message.log.log);
+
+    return copy;
+}
+@c
+@r
+@d
+这样可以吗？答案是可以的，但不是最优解，请参考下这段代码
+%d
+#r
+$c-cs
+public class Message
+{
+    public int mes;
+    public Log log;
+
+    public Message(int i)
+    {
+        this.mes = i;
+        log = new Log(i);
+    }
+
+    public Message Clone()
+    {
+        return new Message(this.mes)
+        {
+            log = this.log.Clone()
+        };
+    }
+}
+
+public class Log
+{
+    public int log;
+
+    public Log(int i)
+    {
+        log = i;
+    }
+
+    public Log Clone()
+    {
+        return new Log(this.log);
+    }
+}
+
+public class Idinfo
+{
+    private int Id;
+    public Message message;
+
+    public Idinfo(int i)
+    {
+        this.Id = i;
+        message = new Message(i);
+    }
+
+    public void setId(int i)
+    {
+        this.Id = i;
+    }
+
+    public int getId()
+    {
+        return this.Id;
+    }
+
+    public Idinfo Clone()
+    {
+        return new Idinfo(this.Id)
+        {
+            message = this.message.Clone()
+        };
+    }
+}
+
+public class Copy : ICloneable
+{
+    private int _num;
+    private DateTime _date;
+    private Idinfo _idinfo;
+
+    public Copy(int i)
+    {
+        _date = DateTime.Now;
+        _num = i;
+        _idinfo = new Idinfo(i);
+    }
+
+    public void setNum(int i)
+    {
+        _num = i;
+    }
+
+    public void setDate(DateTime dt)
+    {
+        _date = dt;
+    }
+
+    public void setId(int i)
+    {
+        _idinfo.setId(i);
+    }
+
+    public DateTime getDate()
+    {
+        return _date;
+    }
+
+    public int getNum()
+    {
+        return _num;
+    }
+
+    public int getId()
+    {
+        return _idinfo.getId();
+    }
+
+    public object Clone()
+    {
+        Copy copy = (Copy)this.MemberwiseClone();
+        copy._idinfo = this._idinfo.Clone();
+        return copy;
+    }
+}
+@c
+@r
+@d
+虽然两种代码没有本质的区别，但是对于后期的维护成本来说，后一种方法更易于更改和发现问题。
+@p
+
+#2
+序列化实现深拷贝
+@2
+#a-4
+@a
+#p
+通常情况下来讲，使用new创建新对象是效率最高的方法，但是需要拷贝到字段多了，或者是拷贝的对象可能需要频繁变动，那么new就不显得是一种良好的方法，除非对性能有极高的要求。
+如果以上情况皆不符合，建议采用序列化的方式来进行深拷贝。
+请参考下面代码
+%d
+#r
+$c-cs
+[Serializable]
+public class Message
+{
+    public int mes;
+    public Log log;
+
+    public Message(int i)
+    {
+        this.mes = i;
+        log = new Log(i);
+    }
+}
+
+[Serializable]
+public class Log
+{
+    public int log;
+
+    public Log(int i)
+    {
+        log = i;
+    }
+}
+
+[Serializable]
+public class Idinfo
+{
+    private int Id;
+    public Message message;
+
+    public Idinfo(int i)
+    {
+        this.Id = i;
+        message = new Message(i);
+    }
+
+    public void setId(int i)
+    {
+        this.Id = i;
+    }
+
+    public int getId()
+    {
+        return this.Id;
+    }
+}
+
+public class Copy
+{
+    private int _num;
+    private DateTime _date;
+    private Idinfo _idinfo;
+
+    public Copy(int i)
+    {
+        _date = DateTime.Now;
+        _num = i;
+        _idinfo = new Idinfo(i);
+    }
+
+    public void setNum(int i)
+    {
+        _num = i;
+    }
+
+    public void setDate(DateTime dt)
+    {
+        _date = dt;
+    }
+
+    public void setId(int i)
+    {
+        _idinfo.setId(i);
+    }
+
+    public DateTime getDate()
+    {
+        return _date;
+    }
+
+    public int getNum()
+    {
+        return _num;
+    }
+
+    public int getId()
+    {
+        return _idinfo.getId();
+    }
+
+    public Copy DeepCopy()
+    {
+        using (MemoryStream stream = new MemoryStream())
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, this);
+            stream.Seek(0, SeekOrigin.Begin);
+            return (Copy)formatter.Deserialize(stream);
+        }
+    }
+}
+@c
+@r
+@d
+在上述代码中，我们使用[Serializable]特性标记了需要序列化的类。然后，在Copy类中，我们实现了DeepCopy方法，该方法将对象序列化到内存流中，然后再从内存流中反序列化为新的对象，从而实现深拷贝。
+@p
+
+

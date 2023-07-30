@@ -1,0 +1,20 @@
+{
+    "JsonUrl":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/Blog_CSharp.json",
+    "List":[
+      {
+        "Id":1,
+        "Title":"浅拷贝和深拷贝",
+        "Des":"sqlserver最基础语法",
+        "Blog_Title":"sqlserver基础",
+        "Url":"https://cdn.jsdelivr.net/gh/zhuang9197/Resource-Silo/Json/Blog/CSharp/Copy.txt",
+        "Nav":[
+          {"Id":"section1","Title":"C#中的类型数据类型"}
+          ,{"Id":"section2","Title":"浅拷贝"}
+          ,{"Id":"section3","Title":"深拷贝"}
+          ,{"Id":"section4","Title":"序列化实现深拷贝"}
+        ],
+        "CreateTime":"2023-02-30",
+        "UpdateTime":""
+      }
+    ]
+}

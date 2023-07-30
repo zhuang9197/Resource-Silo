@@ -8,105 +8,293 @@
 #a-1
 @a
 #p
-    单例模式可以简单理解为整个项目中仅有一个对象实例，这就意味着要么设计构造函数使得在多次实例化类时返回同一个对象，要么将构造函数设为(private),只能通过单例类提供的静态方法得到唯一对象。
-    通常会采用第二种方式，因为第一种不符合正常逻辑。
+工厂模式并不难理解，关键点在于思考角度的问题。
+不要站在工厂的角度上，现在把自己想象成管理者，而你名下有多个工厂需要管理。
 @p
 
 #2
-    根据自己的理解创建第一个单例模式
+简单工厂
 @2
 #a-2
-#p
-    根据单例模式的描述，我们根据自己的理解尝试创建一个单例模式。
-    首先，将构造函数设为private
-
-    class Singleton{
-        private Signleton() => {};
-    }
-    
-    现在，当我们尝试想要实例类时，例如
-    
-    Signleton signleton = new Signleton();
-
-    编译器将给出这个错误:CS0122	“Singleton.Singleton()”不可访问，因为它具有一定的保护级别。
-    报错了，但这是个正确的错误。
-    我们无法显示实例化Signleton这个类，那么就需要一个静态方法，来生成需要的对象，如：
-
-    class Signleton{
-        private Signleton() => {};
-
-        public static Signleton Instance() => new Signleton();
-    }
-
-    到这里，我们实现了，但是很明显这还不是一个单例模式，因为每次调用Instance()时，我们得到的都是一个全新的对象。
-    如果说到这里我们的逻辑都是对的，
-
-    class Signleton{
-
-        private Signleton() => {}
-
-        private static Signleton _signleton;
-
-        private int _Num;
-        private static int _staticNum;
-
-        public static signleton Instance(){
-            if(_signleton == null)
-            {
-                _signleton = new Signleton();
-            }
-
-            return _signleton;
-        }
-
-        public int getNum()
-        {
-            return _Num++;
-        }
-
-        public static int getStaticNum()
-        {
-            return _staticNum++;
-        }
-    }
-
-    Signleton signleton = Signleton.Instance();
-    Signleton signleton_1 = Signleton.Instance();
-
-    Consolg.Writeline(signleton.getNum());
-    Consolg.Writeline(signleton_1.getNum());
-
-    
-@p
-
-#2
-    当前单例模式存在的问题
-@2
-#a-3
 @a
 #p
-    做到这一步，我们实现了单例模式的基本逻辑，但是在开发中，往往无法避免高并发的情况。
-    
-@p
-#d
-    
+假设你做的是手机代工，有四种品牌在你的工厂制作，如（minu，iphone，oppo，vivo）
+为了方便管理，根据四种品牌开设了四种不同的工厂。
+首先，我们先定义工厂需要实现的基本信息和工作时间
 %d
 #r
-$c-sql
-Create Database
+$c-cs
+public interface  IPhoneType
+{
+    public void message();
+
+    public void setTime(int i);
+}
 @c
 @r
 @d
 
-@d      
+四种工厂分别实现这个接口
+%d
+#r
+$c-cs
+public class IPhone : IPhoneType
+{
+    private static int _Time;
+    public void message()
+    {
+        Console.WriteLine("该厂生成的是{0}，每天工作{1}小时", "苹果", _Time);
+    }
+
+
+    public void setTime(int i)
+    {
+        _Time = i;
+    }
+}
+
+public class MI : IPhoneType
+{
+    private static int _Time;
+    public void message()
+    {
+        Console.WriteLine("该厂生成的是{0}，每天工作{1}小时", "小米", _Time);
+    }
+
+
+    public void setTime(int i)
+    {
+        _Time = i;
+    }
+}
+public class Oppo : IPhoneType
+{
+    private static int _Time;
+    public void message()
+    {
+        Console.WriteLine("该厂生成的是{0}，每天工作{1}小时", "oppo", _Time);
+    }
+
+
+    public void setTime(int i)
+    {
+        _Time = i;
+    }
+}
+public class Vivo : IPhoneType
+{
+    private static int _Time;
+    public void message()
+    {
+        Console.WriteLine("该厂生成的是{0}，每天工作{1}小时", "小米", _Time);
+    }
+
+
+    public void setTime(int i)
+    {
+        _Time = i;
+    }
+}
+
+@c
+@r
+@d
+你以你老板的身份，肯定不想每次都跑到各个工厂去考察，那么我们创建一个简单工厂来集中管理这些子工厂。
 
 %d
-    #r
-        $c-cs
-        private int num_1{get;set;}
-        private int num_2{get;set;}
-        public Aside(int num_1)
-        @c
-    @r
-@d
+#r
+$c-cs
+public static class SimpleFactory
+{
+    public static IPhoneType Create(MyEnum myEnum)
+    {
+        switch (myEnum)
+        {
+            case MyEnum.MIPhone:
+                return new MI();
+            case MyEnum.Iphone:
+                return new IPhone();
+            case MyEnum.Oppo:
+                return new Oppo();
+            case MyEnum.Vivo:
+                return new Vivo();
+            default:
+                throw new NotImplementedException();
+        }
+        // return null;
+    } 
+}
 
+public  enum MyEnum:int
+{
+    [Description("小米")]      
+    MIPhone = 1,
+
+    [Description("苹果")]
+    Iphone = 2,
+
+    [Description("oppo")]
+    Oppo = 3,
+
+    [Description("vivo")]
+    Vivo = 4
+
+}
+@c
+@r
+@d
+有了这个简单工厂，再对每个子工厂操作就变得十分简便。
+假如你想看看小米工厂每天的工作时间，顺便发扬一下资本家的特色，将工厂的工作时间加长两个小时。
+
+%d
+#r
+$c-cs
+static void Main(string[] args)
+{
+    IFactory factory = SimpleFactory.Create(MyEnum.MIPhone);
+
+    factory.message();
+    factory.setTime(12);
+    factory.message();
+}
+@c
+@r
+@d
+$d-o
+该厂生成的是小米，每天工作0小时
+该厂生成的是小米，每天工作12小时
+@d
+@p
+
+#2
+工厂模式
+@2
+#a-3
+@a
+#p
+简单工厂建好了，身为老板的你很满意，生意也越做越大，这不，新的手机品牌来找你合作了，你要为魅族新建个工厂。
+此时，突然变得乱糟糟。
+你不仅要修改简单工厂的代码，还要修改MyEnum，不然简单工厂里的人完全不认识这个新来的。
+修改过的代码，只要没经过测试那就是不可靠的，可能原本的程序有用到SimpleFactory类中的方法，原本本该被default的结果，却让你给了选项。
+就好像这个人明明点了退出按钮，你却给他做了一台魅族手机？
+
+为了避免过多的修改代码，尽量满足开闭原则，你决定牺牲成本，为每种品牌创建对应的工厂。
+如上方的四种品牌，并且我们设计一个接口来约束方法和抽象化管理。
+
+接口：
+%d
+#r
+$c-cs
+public interface IFactory{
+    public IPhoneType initialize();
+}
+
+public class MIFactory:IFactory{
+    public IPhoneType initialize()
+    {
+        return new MI();
+    }
+}
+
+public class IPhoneFactory{
+    public IPhoneType initialize()
+    {
+        return new IPhone();
+    }
+}
+
+public class OppoFactory{
+    public IPhoneType initialize()
+    {
+        return new Oppo();
+    }
+}
+
+public class VivoFactory{
+    public IPhoneType initialize(){
+        return new Vivo();
+    }
+}
+@c
+@r
+@d
+如果我们以这种形式，那么对于新增的魅族，我们需要添加两个类
+%d
+#r
+$c-cs
+public class Meizu:IPhoneType{
+    private static int _Time;
+    public void message()
+    {
+        Console.WriteLine("该厂生成的是{0}，每天工作{1}小时", "Meizu", _Time);
+    }
+
+
+    public void setTime(int i)
+    {
+        _Time = i;
+    }
+}
+
+public class MeizuFactory:IFactory{
+    public IPhoneType initialize(){
+        return new Meizu();
+    }
+}
+@c
+@r
+@d
+相信眼尖的朋友就会发现，当我们需要使用如IPhone类时，如果借助工厂，不是还要实例化出IPhoneFactory，再调其中的方法？
+这么想，就代表着到这你已经理解的差不多了。
+很多时候，我们面对的不仅仅只new出一个对象这么简单，例如在这个手机工厂中，你要怎么知道这个厂昨日的产量，或者是更多信息？
+很明显，这里就涉及到一个初始化的概念。
+不管初始化方式是什么，如果我们直接操作对象，每次都要进行的初始化操作将使得代码冗余，所以选择将其封装在工厂类中，由工厂类来统一规范不同对象所需的初始化操作。
+第二点好处是强制客户端使用接口。
+还是刚刚这个例子，假设现在有客户来参观，而你又在生产上使用了许多劣质产品，所以你自然就不想让客户知道这么多细节，让客户去这些工厂类就是一种不错的选择，毕竟我们总有办法让客户只看到我们想让他看见的。
+@p
+
+
+#2
+抽象工厂模式
+@2
+#a-4
+@a
+#p
+生意做了一段时间，你就发现只有手机这条产链已经满足不了你的野心，你开始插手更多的产品，
+例如平板、扫地机器人、路由器。如果采用工厂模式的方式，每个品牌增加三种不同的产品，则需要新建十五个工厂、三十个类。虽然说这种做法利于扩展，但是业务做大之后每一次扩展的工作量巨大。
+现在我们保留工厂模式中Phone模块不变，新增一个平板的接口，并创建平板类，然后将平板类封装进工厂中。
+%d
+#r
+$c-cs
+public interface IPadType
+{
+
+
+    public void show();
+}
+
+public class MIPad : IPadType
+{
+    public show()
+    {
+        Console.WriteLine("小米平板");
+    }
+}
+
+public class MIFactory :IFactory
+{
+    public IPhoneType PhoneInit()
+    {
+        return new MI();
+    }
+
+    public IPadType PadInit()
+    {
+        return MIPad();
+    }
+
+}
+@c
+@r
+@d
+@p
