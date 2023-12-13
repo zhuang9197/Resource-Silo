@@ -1,0 +1,45 @@
+#d
+    WPF快速入门(一)
+@d
+
+#a-1
+@a
+#2
+    前言
+@2
+
+#p
+    该系列系列意在从零快速上手WPF，没经过推敲，大佬海涵和不惜指点
+@p
+
+#a-2
+@a
+#2
+    WPF概述
+@2
+
+#p
+    WPF全称为Windows Presentation Foundation，是Net
+    WPF本质为一个类库，其中提供了构建Windows桌面应用程序所需的类与方法，最顶层的WPF API
+    与Winform不同的是WPF采用XMAL语言编写UI界面
+@p
+
+#a-3
+@a
+#2
+    App.xaml和Application类
+@2
+#p
+    启动Vs创建项目后，可在解决方案管理树中看到初始的项目结构。
+@p
+
+#p
+%d
+#r
+$c-cs
+
+@c
+@r
+@d
+
+@p
